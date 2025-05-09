@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Register to odoo
+# add to the odoo registry.
 from . import (
     ccta95,
     price_list_import,

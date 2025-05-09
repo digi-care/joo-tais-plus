@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Register to odoo
-from . import schemas
+# add to the odoo registry.
 from . import controllers
 from . import models

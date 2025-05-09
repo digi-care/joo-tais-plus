@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Register to odoo
+# add to the odoo registry.
 from . import (
     tais_api,
 )
