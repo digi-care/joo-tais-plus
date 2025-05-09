@@ -1,0 +1,109 @@
+<odoo>
+  <data>
+    <!--
+      ツリー（リスト）やフォームのrecord.idは、モジュール名.ビュー名(モデル名+tree/form)という形式で指定することが推奨されている。
+      例: tais_plus.demo_tree, tais_plus.demo_form
+
+      メニューのアクションのrecord.idは、モジュール名.アクション名という形式で指定することが推奨されている。
+      例: tais_plus.demo_action_window
+
+      メニューのmenuitem.idは、モジュール名.メニュー名という形式で指定することが推奨されている。
+      例: tais_plus.menu_1_list
+
+      ＜＜注意＞＞
+      idは、モジュール名.識別子という形式で指定することが推奨されている。
+      parseエラーが発生するので、モジュール名や識別子に"."を含めないようにすること(_で区切るのは可能)。
+      ただし、開発中にモジュール名の変更があった場合に備えて、モジュール名を省略し、
+      識別子のみを指定する。
+    -->
+    <!-- explicit list view definition -->
+    <!-- <record model="ir.ui.view" id="tais_plus.demo_tree">
+      <field name="name">tais_plus demo tree</field>
+      <field name="model">tais_plus.demo</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="tais_plus.demo_form">
+      <field name="name">tais_plus demo form</field>
+      <field name="model">tais_plus.demo</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <field name="name"/>
+              <field name="value"/>
+              <field name="value2"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record> -->
+
+    <!-- actions opening views on models -->
+    <!-- <record model="ir.actions.act_window" id="tais_plus.demo_action_window">
+      <field name="name">Demo</field>
+      <field name="res_model">tais_plus.demo</field>
+      <field name="view_mode">tree,form</field>
+    </record> -->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="tais_plus.action_server">
+      <field name="name">tais_plus server</field>
+      <field name="model_id" ref="model_tais_plus_tais_plus"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+    <menuitem name="TAIS+" id="menu_root"/>
+    <!-- menu categories -->
+    <menuitem name="福祉用具" id="menu_aid_product"
+              parent="menu_root"/>
+    <menuitem name="TAISコード" id="menu_tais"
+              parent="menu_root"/>
+    <menuitem name="マスタ管理" id="menu_settings"
+              parent="menu_root"/>
+    <!-- menu actions -->
+    <menuitem name = "福祉用具" id="menu_product_template_action"
+              action="product_template_act_window"
+              parent="menu_aid_product"/>
+    <!-- <menuitem name = "福祉用具(バリエーション)" id="menu_product_normal_action_sell"
+              action="product.product_normal_action_sell"
+              parent="menu_aid_product"/> -->
+    <menuitem name = "価格表" id="menu_product_pricelist_action2"
+              action="product.product_pricelist_action2"
+              parent="menu_aid_product"/>
+    <menuitem name = "仕入価格" id="menu_product_supplierinfo_type_action"
+              action="product.product_supplierinfo_type_action"
+              parent="menu_aid_product"/>
+    <menuitem name="TAISコード" id="menu_taiscode"
+              action="taiscode_act_window"
+              parent="menu_tais"/>
+    <menuitem name="上限価格リスト" id="menu_pricelist"
+              action="pricelist_act_window"
+              parent="menu_tais"/>
+    <menuitem name="TAISコード取得（最新化）" id="menu_taiscode_import"
+              action="taiscode_import_act_window"
+              parent="menu_settings"/>
+    <menuitem name="上限価格リストのインポート" id="menu_pricelist_import"
+              action="pricelist_import_act_window"
+              parent="menu_settings"/>
+    <menuitem name="分類コード(CCTA95)" id="menu_ccta95"
+              action="ccta95_act_window"
+              parent="menu_settings"/>
+  </data>
+</odoo>
