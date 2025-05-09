@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Register to odoo
 from . import (
-    tais_api,
+    tais_product,
 )

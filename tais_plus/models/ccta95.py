@@ -17,7 +17,6 @@ class Ccta95(models.Model):
     ccta95_code = fields.Char(
         string="分類コード",
         required=True,
-        unique=True,
         help="TAISに登録された福祉用具には、「分類コード(CCTA95)」が付番されます。",
     )
     name = fields.Char(string="分類項目")

@@ -20,7 +20,6 @@ class PriceList(models.Model):
     )
 
     _sql_constraints = [
-        ("unique_name", "UNIQUE(name)", "The name must be unique."),
         (
             "unique_tais_code_date",
             "UNIQUE(tais_code_date)",

@@ -1,29 +1,14 @@
 import re
-from typing import TypedDict
 from bs4 import BeautifulSoup
 import requests
 from odoo import models
+from ..schemas.tais_product import TaisProduct
 
 class TaisCodeService(models.AbstractModel):
     _name = "tais_plus.taiscode.service"
     _description = "TAIS Code"
 
     _BASE_URL_TAIS = "https://www.techno-tais.jp/"
-    
-    class TaisProduct(TypedDict):
-        tais_code: str
-        tais_url: str
-        ccta95_code: str
-        product_name: str
-        product_model: str
-        manufacturer: str
-        rental_service_code: str
-        rental_service_name: str
-        sales_service_code: str
-        sales_service_name: str
-        product_summary: str
-        image_url: str
-        is_discontinued: bool
 
     def generate_tais_url(self, tais_code1, tais_code2):
         base_url = self._BASE_URL_TAIS + "ServiceWelfareGoodsDetail.php"
@@ -49,7 +34,6 @@ class TaisCodeService(models.AbstractModel):
     def _get_code_rental(self, name):
         return self._name_to_code_rental.get(name, "00")
 
-
     _name_to_code_sales = {
         "腰掛便座": "01",
         "自動排泄処理装置の交換可能部品": "02",
@@ -65,7 +49,7 @@ class TaisCodeService(models.AbstractModel):
     def _get_code_sales(self, name):
         return self._name_to_code_sales.get(name, "00")
 
-    def get_tais_product(self, tais_url)-> TaisProduct:
+    def get_tais_product(self, tais_url: str) -> TaisProduct:
         # Access TAIS and parse HTML with BeautifulSoup
         response = requests.get(tais_url)
         html = response.text
@@ -92,18 +76,26 @@ class TaisCodeService(models.AbstractModel):
         rental_service_name = None
         rental_service_name_dt = div_left.find("dt", string="貸与")
         if rental_service_name_dt:
-            rental_service_name_item = getattr(rental_service_name_dt.find_next("dd"), "text", None)
-            rental_service_name = rental_service_name_item.strip() if rental_service_name_item else None
+            rental_service_name_item = getattr(
+                rental_service_name_dt.find_next("dd"), "text", None
+            )
+            rental_service_name = (
+                rental_service_name_item.strip() if rental_service_name_item else None
+            )
         rental_service_code = self._get_code_rental(rental_service_name)
 
         # Sales category - sales_service_name, sales_service_code
         sales_service_name = None
         sales_service_name_dt = div_left.find("dt", string="購入")
         if sales_service_name_dt:
-            sales_service_name_item = getattr(sales_service_name_dt.find_next("dd"),"text", None)
-            sales_service_name = sales_service_name_item.strip() if sales_service_name_item else None
+            sales_service_name_item = getattr(
+                sales_service_name_dt.find_next("dd"), "text", None
+            )
+            sales_service_name = (
+                sales_service_name_item.strip() if sales_service_name_item else None
+            )
         sales_service_code = self._get_code_sales(sales_service_name)
-        
+
         # Manufacturer/Product name/model
         manufacturer = None
         product_name = None
@@ -117,8 +109,10 @@ class TaisCodeService(models.AbstractModel):
                 product_name_item = getattr(prudoct_h3, "text", None)
                 product_name = product_name_item.strip() if product_name_item else None
                 product_model_item = getattr(prudoct_h3.find_next("p"), "text", None)
-                product_model = product_model_item.strip() if product_model_item else None
-        
+                product_model = (
+                    product_model_item.strip() if product_model_item else None
+                )
+
         # TAIS code
         tais_code = None
         tais_code_dt = div_left.find("dt", string="TAISコード")
@@ -128,7 +122,11 @@ class TaisCodeService(models.AbstractModel):
                 tais_code_span = tais_code_dd.find("span")
                 if tais_code_span:
                     tais_code_item = getattr(tais_code_span, "text", None)
-                    tais_code = tais_code_item.replace(" ", "").strip() if tais_code_item else None
+                    tais_code = (
+                        tais_code_item.replace(" ", "").strip()
+                        if tais_code_item
+                        else None
+                    )
 
         # Classification code - ccta95_code
         ccta95_code = None
@@ -149,31 +147,37 @@ class TaisCodeService(models.AbstractModel):
         if product_summary_dt:
             product_summary_dd = product_summary_dt.find_next("dd")
             if product_summary_dd:
-                product_summary_item = getattr(product_summary_dd.find("p"), "text", None)
-                product_summary = product_summary_item.strip() if product_summary_item else None
+                product_summary_item = getattr(
+                    product_summary_dd.find("p"), "text", None
+                )
+                product_summary = (
+                    product_summary_item.strip() if product_summary_item else None
+                )
 
         # Image URL
         image_url_img = div_right.find("img")
         image_url = (
-            self._BASE_URL_TAIS + image_url_img["src"].lstrip("./") if image_url_img and "src" in image_url_img.attrs else None
+            self._BASE_URL_TAIS + image_url_img["src"].lstrip("./")
+            if image_url_img and "src" in image_url_img.attrs
+            else None
         )
 
         # Check if the product is discontinued
         discontinued_tag = div_right.find("p", string="生産終了")
         is_discontinued = discontinued_tag is not None
 
-        return TaisCodeService.TaisProduct(
-            tais_code= tais_code,
-            tais_url= tais_url,
-            ccta95_code= ccta95_code,
-            product_name= product_name,
-            product_model= product_model,
-            manufacturer= manufacturer,
-            rental_service_code= rental_service_code,
-            rental_service_name= rental_service_name,
-            sales_service_code= sales_service_code,
-            sales_service_name= sales_service_name,
-            product_summary= product_summary,
-            image_url= image_url,
-            is_discontinued= is_discontinued,
+        return TaisProduct(
+            tais_code=tais_code,
+            tais_url=tais_url,
+            ccta95_code=ccta95_code,
+            product_name=product_name,
+            product_model=product_model,
+            manufacturer=manufacturer,
+            rental_service_code=rental_service_code,
+            rental_service_name=rental_service_name,
+            sales_service_code=sales_service_code,
+            sales_service_name=sales_service_name,
+            product_summary=product_summary,
+            image_url=image_url,
+            is_discontinued=is_discontinued,
         )

@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from typing import TypedDict
 
 # Define a type alias
-class TaisProduct(BaseModel):
+class TaisProduct(TypedDict):
     tais_code: str
     tais_url: str
     ccta95_code: str

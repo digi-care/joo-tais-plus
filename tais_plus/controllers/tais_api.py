@@ -4,7 +4,6 @@ from odoo.http import request
 import json
 from datetime import datetime, date
 
-
 def date_serializer(obj):
     """Custom serializer for date objects."""
     if isinstance(obj, date):
@@ -67,7 +66,7 @@ class TaisAPI(http.Controller):
                     )
                 ),
                 headers=[("Content-Type", "application/json")],
-                status=500,
+                status=400,
             )
 
         # Validate the extracted TAIS code

@@ -16,7 +16,6 @@ class TaisCode(models.Model):
     tais_code = fields.Char(
         string="TAISコード",
         required=True,
-        unique=True,
         help="TAISコードは、企業コード(5桁)と福祉用具コード(6桁)で構成されます。",
     )
 
