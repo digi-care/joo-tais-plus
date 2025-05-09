@@ -1,0 +1,64 @@
+<odoo>
+    <record id="taiscode_tree" model="ir.ui.view">
+        <field name="name">tais_plus taiscode tree</field>
+        <field name="model">tais_plus.taiscode</field>
+        <field name="arch" type="xml">
+            <tree string="TAISコード">
+                <field name="tais_code"/>
+                <field name="name"/>
+                <field name="product_model"/>
+                <field name="rental_service"/>
+                <field name="sales_service"/>
+                <field name="ccta95_id"/>
+                <field name="tais_url" widget="url"/>
+                <field name="is_discontinued" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="taiscode_form" model="ir.ui.view">
+        <field name="name">tais_plus taiscode form</field>
+        <field name="model">tais_plus.taiscode</field>
+        <field name="arch" type="xml">
+            <form string="TAISコード" default_order="tais_code asc">
+                <sheet>
+                    <group>
+                        <field name="tais_code"/>
+                        <field name="name"/>
+                        <field name="product_model"/>
+                        <field name="ccta95_id"/>
+                        <field name="rental_service"/>
+                        <field name="sales_service"/>
+                        <field name="manufacturer"/>
+                        <field name="product_summary"/>
+                        <field name="image_url"/>
+                        <field name="image" widget="image"/>
+                        <field name="tais_url" widget="url"/>
+                        <field name="is_discontinued" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 検索ビュー -->
+    <record id="taiscode_search_view" model="ir.ui.view">
+        <field name="name">tais_plus taiscode search view</field>
+        <field name="model">tais_plus.taiscode</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="コード/商品名/型番/分類" filter_domain="['|', '|', '|', ('ccta95_id.name', 'ilike', self), ('product_model', 'ilike', self), ('tais_code', 'ilike', self), ('name', 'ilike', self)]"/>
+                <field name="tais_code" string="TAISコード"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- アクション -->
+    <record id="taiscode_act_window" model="ir.actions.act_window">
+        <field name="name">TAISコード</field>
+        <field name="res_model">tais_plus.taiscode</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="taiscode_search_view"/>
+    </record>
+
+</odoo>

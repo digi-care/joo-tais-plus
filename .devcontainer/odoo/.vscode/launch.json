@@ -20,6 +20,24 @@
                 "--limit-time-real=100000"
             ],
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Odoo addons (with update)",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${env:PATH_ODOO}",
+            "program": "${env:PATH_ODOO}/odoo/odoo-bin",
+            "args": [
+                "--db_host=${env:DB_HOST}",
+                "--db_port=${env:DB_PORT}",
+                "--db_user=${env:DB_USER}",
+                "--db_password=${env:DB_PASSWORD}",
+                "--database=${env:DB_NAME}",
+                "--limit-time-real=100000",
+                "--log-level=debug",
+                "-u ${env:CUSTOM_ADDONS_MODULE}"
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }

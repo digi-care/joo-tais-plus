@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acl.tais_plus.ccta95.default,tais_plus.ccta95.default,model_tais_plus_ccta95,base.group_user,1,0,0,0
+acl.tais_plus.taiscode.default,tais_plus.taiscode.default,model_tais_plus_taiscode,base.group_user,1,0,0,0
+acl.tais_plus.taiscode.system,tais_plus.taiscode.system,model_tais_plus_taiscode,base.group_system,1,0,0,1
+acl.tais_plus.taiscode.import.system,tais_plus.taiscode.import.system,model_tais_plus_taiscode_import,base.group_system,1,0,1,0
+acl.tais_plus.pricelist.default,tais_plus.pricelist.default,model_tais_plus_pricelist,base.group_user,1,0,0,0
+acl.tais_plus.pricelist.item.default,tais_plus.pricelist.item.default,model_tais_plus_pricelist_item,base.group_user,1,0,0,0
+acl.tais_plus.pricelist.system,tais_plus.pricelist.system,model_tais_plus_pricelist,base.group_system,1,0,0,1
+acl.tais_plus.pricelist.item.system,tais_plus.pricelist.item.system,model_tais_plus_pricelist_item,base.group_system,1,0,0,1
+acl.tais_plus.pricelist.import.system,tais_plus.pricelist.import.default,model_tais_plus_pricelist_import,base.group_user,1,0,1,0

@@ -44,6 +44,12 @@
             "type": "shell",
             "command": "${env:PATH_ODOO}/odoo/odoo-bin scaffold ${input:addon-name} ${env:PATH_ODOO}/custom_addons/",
             "problemMatcher": [],
+        },
+        {
+            "label": "Update ",
+            "type": "shell",
+            "command": "${env:PATH_ODOO}/odoo/odoo-bin -u all -d ${env:DB_NAME}",
+            "problemMatcher": [],
         }
     ],
     "inputs": [

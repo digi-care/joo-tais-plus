@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
 
 # [Optional] Allow the vscode user to pip install globally w/o sudo
 ENV PIP_TARGET=/usr/local/pip-global
-ENV PYTHONPATH=${PIP_TARGET}:${PYTHONPATH}
+ENV PYTHON_PATH=${PIP_TARGET}:${PYTHON_PATH}
 ENV PATH=${PIP_TARGET}/bin:${PATH}
 RUN if ! cat /etc/group | grep -e "^pip-global:" > /dev/null 2>&1; then groupadd -r pip-global; fi \
     && usermod -a -G pip-global vscode \
@@ -51,6 +51,10 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
         python3-pyldap python3-qrcode python3-renderpm python3-setuptools python3-slugify \
         python3-vobject python3-watchdog python3-xlrd python3-xlwt
 
+# [Optional] If your pip requirements rarely change, uncomment this section to add them to the image.
+RUN pip3 --disable-pip-version-check --no-cache-dir install --upgrade pip
+RUN sudo pip3 --disable-pip-version-check --no-cache-dir install --upgrade pip
+
 # Install dependencies
 # RUN pip3 --disable-pip-version-check --no-cache-dir install -r odoo/requirements.txt
 RUN sudo pip3 --disable-pip-version-check --no-cache-dir install -r odoo/requirements.txt
@@ -89,7 +93,7 @@ RUN mkdir /home/vscode/.vscode-server \
     && chown vscode:vscode /home/vscode/.vscode-server
 
 # odoo server configuration environment files
-ENV ODOO_RC /etc/odoo/odoo.conf
+ENV ODOO_RC=/etc/odoo/odoo.conf
 ENV PATH="/opt/odoo/scripts:${PATH}"
 
 EXPOSE 8069 8072
