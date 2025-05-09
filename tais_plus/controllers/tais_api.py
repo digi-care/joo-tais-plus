@@ -3,6 +3,9 @@ from odoo import http
 from odoo.http import request
 import json
 from datetime import datetime, date
+from ..models.tais_code_service import TaisCodeService
+from ..models.price_list_service import PriceListService
+
 
 def date_serializer(obj):
     """Custom serializer for date objects."""
@@ -51,7 +54,9 @@ class TaisAPI(http.Controller):
             )
 
         # Fetch data from TAIS
-        taisCodeService = request.env["tais_plus.taiscode.service"].sudo()
+        taisCodeService: TaisCodeService = request.env[
+            "tais_plus.taiscode.service"
+        ].sudo()
         tais_url = taisCodeService.generate_tais_url(
             validation_result[0], validation_result[1]
         )
@@ -88,7 +93,7 @@ class TaisAPI(http.Controller):
         )
 
     @http.route(
-        "/tais_plus/api/price/<string:tais_code>/<string:target_date>",
+        "/tais_plus/api/pricecap/<string:tais_code>/<string:target_date>",
         type="http",
         auth="public",
         methods=["GET"],
@@ -119,11 +124,11 @@ class TaisAPI(http.Controller):
             )
 
         # env
-        priceListService = request.env["tais_plus.pricelist.service"].sudo()
-        data = priceListService.get_tais_info(
-            tais_code, target_date
-        )
+        priceListService: PriceListService = request.env[
+            "tais_plus.pricelist.service"
+        ].sudo()
+        taisPriceCap = priceListService.get_tais_price_cap(tais_code, target_date)
         return request.make_response(
-            json.dumps(data, default=date_serializer),
+            json.dumps(taisPriceCap, default=date_serializer),
             headers=[("Content-Type", "application/json")],
         )

@@ -1,41 +1,28 @@
 from odoo import models
 from datetime import date
-from typing import Optional, TypedDict
 
 from ..models.price_list_item import PriceListItem
+from ..schemas.tais_price_cap import TaisPriceCap
+from ..schemas.tais_price_cap_item import TaisPriceCapItem
 
 
 class PriceListService(models.AbstractModel):
     _name = "tais_plus.pricelist.service"
     _description = "TAIS Code Price List Service"
 
-    # Define a type alias
-    class TaisPrice(TypedDict):
-        name: str
-        date: date
-        maximum: float
-        currency: str
-
-    # Define a type alias
-    class TaisInfo(TypedDict):
-        tais_code: str
-        target_date: date
-        target: any
-        future: any
-
-    def get_tais_info(
+    def get_tais_price_cap(
         self,
         tais_code: str,
         target_date: date,
-    ) -> TaisInfo:
+    ) -> TaisPriceCap:
 
         # Fetch target and previous records
-        target = self.get_tais_price_target(tais_code, target_date)
+        target = self._get_tais_price_cap_target(tais_code, target_date)
 
         # Determine target or minimum
-        future = self.get_tais_price_target_or_future(target, tais_code, target_date)
+        future = self._get_tais_price_cap_target_or_future(target, tais_code, target_date)
 
-        data = PriceListService.TaisInfo(
+        data = TaisPriceCap(
             tais_code=tais_code,
             target_date=target_date,
             target=target,
@@ -43,9 +30,9 @@ class PriceListService(models.AbstractModel):
         )
         return data
 
-    def get_tais_price_target_or_future(
-        self, target: Optional[TaisPrice], tais_code: str, target_date: date
-    ) -> Optional[TaisPrice]:
+    def _get_tais_price_cap_target_or_future(
+        self, target: TaisPriceCapItem, tais_code: str, target_date: date
+    ):
         priceListItem: PriceListItem = self.env["tais_plus.pricelist.item"]
         record = priceListItem.search(
             [("tais_code", "=", tais_code), ("tais_code_date", ">", target_date)],
@@ -53,7 +40,7 @@ class PriceListService(models.AbstractModel):
             limit=1,
         )
         if record:
-            future = PriceListService.TaisPrice(
+            future = TaisPriceCapItem(
                 name=record.pricelist_id.name,
                 date=record.tais_code_date,
                 maximum=record.maximum_price,
@@ -64,20 +51,20 @@ class PriceListService(models.AbstractModel):
             return future
         return target
 
-    def get_tais_price_target(
+    def _get_tais_price_cap_target(
         self,
         tais_code: str,
         target_date: date,
-    ) -> Optional[TaisPrice]:
+    ):
         priceListItem: PriceListItem = self.env["tais_plus.pricelist.item"]
         record = priceListItem.search(
             [("tais_code", "=", tais_code), ("tais_code_date", "<=", target_date)],
             order="tais_code_date desc",
             limit=1,
         )
-        target: Optional[PriceListService.TaisPrice] = None
+        target = None
         if record:
-            target = PriceListService.TaisPrice(
+            target = TaisPriceCapItem(
                 name=record.pricelist_id.name,
                 date=record.tais_code_date,
                 maximum=record.maximum_price,
